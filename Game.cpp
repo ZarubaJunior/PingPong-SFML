@@ -11,8 +11,8 @@ void Game::initWindow()
 
 	player1Speed = 700;
 	player2Speed = 700;
-	ballSpeed[0] = 800;
-	ballSpeed[1] = 700;
+	ballSpeed[0] = 600;
+	ballSpeed[1] = 600;
 	player1Pos[0] = 100; player1Pos[1] = videoMode.height / 2;
 
 	this->player1.setOutlineThickness(10);
@@ -25,13 +25,13 @@ void Game::initWindow()
 	racketHeight = player1.getSize().y ;
 
 	racketOutlineThickness = player1.getOutlineThickness();
-
-	player2Pos[0] = videoMode.width - 100; player2Pos[1] = videoMode.height / 2;
+	
 
 	this->player2.setOutlineThickness(10);
 	this->player2.setOutlineColor(sf::Color(255, 255, 255));
 	this->player2.setSize(sf::Vector2f(70.f, 300.f));
 	this->player2.setFillColor(sf::Color(0, 0, 0));
+	player2Pos[0] = videoMode.width - 100 - player2.getSize().x; player2Pos[1] = videoMode.height / 2;
 	this->player2.setPosition(sf::Vector2f(player2Pos[0], player2Pos[1]));
 
 	ballPos[0] = videoMode.width / 2; ballPos[1] = videoMode.height / 2;
@@ -87,14 +87,14 @@ const bool Game::isRunning() const
 
 void Game::keyBoardInput()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && player1Pos[1] >= 0.f) // Move up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && player1Pos[1]  - racketOutlineThickness >= 0.f) // Move up
 		player1Pos[1] -= player1Speed * deltaTime;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && player1Pos[1] + racketHeight <= this->videoMode.height) // Move down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && player1Pos[1] + racketHeight + racketOutlineThickness <= this->videoMode.height) // Move down
 		player1Pos[1] += player1Speed * deltaTime;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player2Pos[1] >= 0.f) // Move up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player2Pos[1] - racketOutlineThickness >= 0.f) // Move up
 		player2Pos[1] -= player2Speed * deltaTime;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player2Pos[1] + racketHeight <= this->videoMode.height) // Move down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player2Pos[1] + racketHeight + racketOutlineThickness <= this->videoMode.height) // Move down
 		player2Pos[1] += player2Speed * deltaTime;
 }
 
@@ -115,12 +115,6 @@ void Game::ballMovement()
 		ballPos[0] = videoMode.width / 2; ballPos[1] = videoMode.height / 2;
 		text1.setString("Score: " + std::to_string(player1Score));
 	}
-	/*
-	if (ballPos[0] < middleLine.getPosition().x + 10
-		&& ballPos[0] > middleLine.getPosition().x
-		|| ballPos[0] == videoMode.width / 2)
-		ballFuse = false;
-*/
 	if (ballPos[0] < player2Pos[0]
 		&& ballPos[0] > player1Pos[0]
 		|| ballPos[0] == videoMode.width / 2) 
@@ -169,8 +163,7 @@ void Game::update()
 	keyBoardInput();
 
 	this->player1.setPosition(player1Pos[0], player1Pos[1]);
-	this->player2.setPosition(player2Pos[0], player2Pos[1]);
-	
+	this->player2.setPosition(player2Pos[0], player2Pos[1]);	
 }
 
 void Game::render()
